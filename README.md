@@ -272,4 +272,4 @@ An end-to-end machine learning system and interactive web application designed t
 
 <h2>👤 Author</h2>
 <p><b>Khaled Tayeb</b><br>
-Computer Science Graduate | Data Analyst & AI Enthusiast</p>
+Computer Science — King Abdulaziz University | AI & Data Analyst</p>
