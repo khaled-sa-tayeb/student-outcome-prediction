@@ -1,6 +1,6 @@
 <div align="center">
 
-<h1>🎓 Student Outcome Prediction — ML Classification Model</h1>
+<h1>Student Outcome Prediction — ML Classification Model</h1>
 
 <p>
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
@@ -31,11 +31,11 @@ An end-to-end machine learning system and interactive web application designed t
   <tbody>
     <tr>
       <td><b>Model Accuracy</b></td>
-      <td>Achieved an overall accuracy of <b>86%</b> on the test dataset[cite: 2].</td>
+      <td>Achieved an overall accuracy of <b>86%</b> on the test dataset.</td>
     </tr>
     <tr>
       <td><b>Performance Balance</b></td>
-      <td>Strong classification metrics across both classes (Pass/Fail) with reliable precision and recall scores[cite: 2].</td>
+      <td>Strong classification metrics across both classes (Pass/Fail) with reliable precision and recall scores.</td>
     </tr>
   </tbody>
 </table>
@@ -60,31 +60,31 @@ An end-to-end machine learning system and interactive web application designed t
   <tbody>
     <tr>
       <td><code>studentInfo.csv</code></td>
-      <td>Demographics & final outcomes[cite: 2]</td>
+      <td>Demographics & final outcomes</td>
     </tr>
     <tr>
       <td><code>studentVle.csv</code></td>
-      <td>Student activity logs (VLE interactions)[cite: 2]</td>
+      <td>Student activity logs (VLE interactions)</td>
     </tr>
     <tr>
       <td><code>studentAssessment.csv</code></td>
-      <td>Assessment scores[cite: 2]</td>
+      <td>Assessment scores</td>
     </tr>
     <tr>
       <td><code>studentRegistration.csv</code></td>
-      <td>Registration & withdrawal info[cite: 2]</td>
+      <td>Registration & withdrawal info</td>
     </tr>
     <tr>
       <td><code>courses.csv</code></td>
-      <td>Course-level info[cite: 2]</td>
+      <td>Course-level info</td>
     </tr>
     <tr>
       <td><code>assessments.csv</code></td>
-      <td>Assessment metadata[cite: 2]</td>
+      <td>Assessment metadata</td>
     </tr>
     <tr>
       <td><code>vle.csv</code></td>
-      <td>Virtual learning environment tools[cite: 2]</td>
+      <td>Virtual learning environment tools</td>
     </tr>
   </tbody>
 </table>
@@ -103,23 +103,23 @@ An end-to-end machine learning system and interactive web application designed t
   <tbody>
     <tr>
       <td><b>1. Data Loading & Exploration</b></td>
-      <td>Loaded raw CSV datasets including student info, VLE clicks, and assessments; explored structural relationships and identified missing values[cite: 2].</td>
+      <td>Loaded raw CSV datasets including student info, VLE clicks, and assessments; explored structural relationships and identified missing values.</td>
     </tr>
     <tr>
       <td><b>2. Data Cleaning</b></td>
-      <td>Cleaned and preprocessed raw datasets to handle missing records, standardize formats, and map unregistration dates for proper binary tracking[cite: 2].</td>
+      <td>Cleaned and preprocessed raw datasets to handle missing records, standardize formats, and map unregistration dates for proper binary tracking.</td>
     </tr>
     <tr>
       <td><b>3. Feature Engineering</b></td>
-      <td>Calculated key behavioral features per student: <code>avg_score</code>, <code>num_assessments</code>, <code>total_clicks</code>, <code>active_days</code>, <code>avg_clicks_per_day</code>, and <code>withdrew</code> status[cite: 2].</td>
+      <td>Calculated key behavioral features per student: <code>avg_score</code>, <code>num_assessments</code>, <code>total_clicks</code>, <code>active_days</code>, <code>avg_clicks_per_day</code>, and <code>withdrew</code> status.</td>
     </tr>
     <tr>
       <td><b>4. Model Training</b></td>
-      <td>Built a binary classification target, encoded categorical features using <code>pd.get_dummies</code>, and trained a <b>Random Forest Classifier</b> (80/20 train-test split)[cite: 2].</td>
+      <td>Built a binary classification target, encoded categorical features using <code>pd.get_dummies</code>, and trained a <b>Random Forest Classifier</b> (80/20 train-test split).</td>
     </tr>
     <tr>
       <td><b>5. Deployment</b></td>
-      <td>Exported the trained model using <code>joblib</code> (<code>student_model.pkl</code>) and generated historical processed data for real-time comparative percentile ranking[cite: 1, 2].</td>
+      <td>Exported the trained model using <code>joblib</code> (<code>student_model.pkl</code>) and generated historical processed data for real-time comparative percentile ranking.</td>
     </tr>
   </tbody>
 </table>
@@ -165,11 +165,11 @@ An end-to-end machine learning system and interactive web application designed t
   <tbody>
     <tr>
       <td><b>Real-time Predictions</b></td>
-      <td>Input student metrics via an interactive sidebar to instantly predict success probability and risk levels[cite: 1].</td>
+      <td>Input student metrics via an interactive sidebar to instantly predict success probability and risk levels.</td>
     </tr>
     <tr>
       <td><b>Comparative Analytics</b></td>
-      <td>Computes student performance and engagement scores against historical data percentiles[cite: 1].</td>
+      <td>Computes student performance and engagement scores against historical data percentiles.</td>
     </tr>
     <tr>
       <td><b>Probability Distributions</b></td>
@@ -196,23 +196,23 @@ An end-to-end machine learning system and interactive web application designed t
   <tbody>
     <tr>
       <td><b>Programming Language</b></td>
-      <td>Python[cite: 1, 2]</td>
+      <td>Python</td>
     </tr>
     <tr>
       <td><b>Machine Learning</b></td>
-      <td>Scikit-learn, Random Forest[cite: 1, 2]</td>
+      <td>Scikit-learn, Random Forest</td>
     </tr>
     <tr>
       <td><b>Data Processing</b></td>
-      <td>Pandas, NumPy[cite: 1, 2]</td>
+      <td>Pandas, NumPy</td>
     </tr>
     <tr>
       <td><b>Web Framework</b></td>
-      <td>Streamlit[cite: 1]</td>
+      <td>Streamlit</td>
     </tr>
     <tr>
       <td><b>Model Persistence</b></td>
-      <td>Joblib[cite: 1, 2]</td>
+      <td>Joblib</td>
     </tr>
     <tr>
       <td><b>Visualization</b></td>
@@ -239,31 +239,31 @@ An end-to-end machine learning system and interactive web application designed t
     </tr>
     <tr>
       <td><code>apps.py</code></td>
-      <td>Interactive Streamlit web application interface[cite: 1]</td>
+      <td>Interactive Streamlit web application interface</td>
     </tr>
     <tr>
       <td><code>studentInfo.csv</code></td>
-      <td>Student demographic dataset[cite: 2]</td>
+      <td>Student demographic dataset</td>
     </tr>
     <tr>
       <td><code>studentVle.csv</code></td>
-      <td>Student Virtual Learning Environment interactions[cite: 2]</td>
+      <td>Student Virtual Learning Environment interactions</td>
     </tr>
     <tr>
       <td><code>studentAssessment.csv</code></td>
-      <td>Student assessment scores[cite: 2]</td>
+      <td>Student assessment scores</td>
     </tr>
     <tr>
       <td><code>studentRegistration.csv</code></td>
-      <td>Registration and unregistration details[cite: 2]</td>
+      <td>Registration and unregistration details</td>
     </tr>
     <tr>
       <td><code>student_model.pkl</code></td>
-      <td>Saved trained Random Forest model[cite: 2]</td>
+      <td>Saved trained Random Forest model</td>
     </tr>
     <tr>
       <td><code>decoded_student_data.csv</code></td>
-      <td>Processed historical dataset for comparisons[cite: 1, 2]</td>
+      <td>Processed historical dataset for comparisons</td>
     </tr>
   </tbody>
 </table>
@@ -272,4 +272,4 @@ An end-to-end machine learning system and interactive web application designed t
 
 <h2>👤 Author</h2>
 <p><b>Khaled Tayeb</b><br>
-Computer Science Graduate | Data Analyst & AI Enthusiast[cite: 1]</p>
+Computer Science Graduate | Data Analyst & AI Enthusiast</p>
