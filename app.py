@@ -202,9 +202,14 @@ PROFILE_DEFAULTS = {
 EXAMPLES = {
     "typical": {"q": 0.50, "avg_score": None, "missed_assessments": 0, "avg_days_late": 0, "days_since_last_activity": None},
     "on_track": {"q": 0.80, "avg_score": 88, "missed_assessments": 0, "avg_days_late": -2, "days_since_last_activity": 1},
-    "borderline": {"q": 0.35, "avg_score": 62, "missed_assessments": 1, "avg_days_late": 2, "days_since_last_activity": 6},
     "at_risk": {"q": 0.12, "avg_score": 42, "missed_assessments": 2, "avg_days_late": 5, "days_since_last_activity": 21},
 }
+# "Borderline" is not fixed: it is found per day between "at_risk" and "on_track" (see borderline_values)
+
+SLIDER_STEPS = {"total_clicks": 50, "clicks_last_14_days": 10}
+
+# Pass chance from the model's threshold up to this value is shown as "Monitor"
+MONITOR_UPPER = 0.75
 
 
 def peers(day):
@@ -240,8 +245,63 @@ def example_values(day, name):
     return values
 
 
-def apply_example(name):
-    st.session_state.update(example_values(st.session_state.day, name))
+def blend(low, high, t):
+    """Values a share t of the way from one example student to another, rounded to slider steps."""
+    values = {}
+    for key in ACTIVITY:
+        step = SLIDER_STEPS.get(key, 1)
+        values[key] = int(round((low[key] + (high[key] - low[key]) * t) / step) * step)
+    return values
+
+
+def borderline_values(day, profile):
+    """Search between the at-risk and on-track students for one the model is unsure about.
+
+    What counts as borderline changes with the course day (and the student's profile),
+    so the example aims for the middle of the "Monitor" band of the current model.
+    """
+    low, high = example_values(day, "at_risk"), example_values(day, "on_track")
+    threshold = load_model(day)[2].get("threshold", 0.5)
+    target = (threshold + MONITOR_UPPER) / 2
+    def closest(candidates):
+        return min(candidates, key=lambda c: abs(c[1] - target))
+
+    # Coarse: move every input together between the two students
+    lo, hi = 0.0, 1.0
+    tried = []
+    for _ in range(12):
+        t = (lo + hi) / 2
+        values = blend(low, high, t)
+        p = predict(values, profile, day)
+        tried.append((values, p))
+        lo, hi = (t, hi) if p < target else (lo, t)
+    # Fine: whole-number inputs (like missed deadlines) make jumps that can skip the target,
+    # so tune the score alone from the nearest point on each side of the target
+    below = [c for c in tried if c[1] < target]
+    above = [c for c in tried if c[1] >= target]
+    bases = [max(below, key=lambda c: c[1])[0]] if below else []
+    bases += [min(above, key=lambda c: c[1])[0]] if above else []
+    for base in bases:
+        lo, hi = 0, 100
+        while lo <= hi:
+            score = (lo + hi) // 2
+            values = dict(base, avg_score=score)
+            p = predict(values, profile, day)
+            tried.append((values, p))
+            lo, hi = (score + 1, hi) if p < target else (lo, score - 1)
+    return closest(tried)[0]
+
+
+def apply_example(name, reset_profile=True):
+    day = st.session_state.day
+    # An example is a whole student, so it also sets a standard profile
+    if reset_profile:
+        st.session_state.update(PROFILE_DEFAULTS)
+    if name == "borderline":
+        profile = {k: st.session_state[k] for k in PROFILE_DEFAULTS}
+        st.session_state.update(borderline_values(day, profile))
+    else:
+        st.session_state.update(example_values(day, name))
 
 
 def on_day_change():
@@ -249,7 +309,7 @@ def on_day_change():
     if st.session_state.day is None:
         st.session_state.day = st.session_state.last_day
     st.session_state.last_day = st.session_state.day
-    apply_example("typical")
+    apply_example("typical", reset_profile=False)
 
 
 if "day" not in st.session_state:
@@ -424,7 +484,7 @@ if pass_proba < threshold:
     verdict, chip_bg, color = "At risk", "var(--bad-soft)", "var(--bad)"
     title = "Likely to fail or withdraw"
     text = "This student matches the pattern of students who did not pass. Reaching out now gives the most time to help."
-elif pass_proba < 0.75:
+elif pass_proba < MONITOR_UPPER:
     verdict, chip_bg, color = "Monitor", "var(--warn-soft)", "var(--warn)"
     title = "Likely to pass, but not safely"
     text = "The model leans towards a pass, with real uncertainty. Keep an eye on deadlines and activity."
