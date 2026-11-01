@@ -1,0 +1,17 @@
+# Raw OULAD data (too large for GitHub; download link in README)
+studentInfo.csv
+studentVle.csv
+studentAssessment.csv
+studentRegistration.csv
+courses.csv
+assessments.csv
+vle.csv
+
+# Outputs of the old version
+old_version/
+X_serving.csv
+Model.zip
+/student_model.pkl
+
+__pycache__/
+.claude/

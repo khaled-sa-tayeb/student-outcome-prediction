@@ -1,0 +1,11 @@
+{
+  "cutoff_day": 30,
+  "enrollments": 27466,
+  "train_size": 22025,
+  "test_size": 5441,
+  "threshold": 0.55,
+  "cv_accuracy": 0.7236,
+  "accuracy": 0.7144,
+  "f1_macro": 0.7089,
+  "at_risk_recall": 0.663
+}

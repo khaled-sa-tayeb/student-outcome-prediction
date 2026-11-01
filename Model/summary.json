@@ -1,0 +1,57 @@
+[
+  {
+    "cutoff_day": 30,
+    "enrollments": 27466,
+    "train_size": 22025,
+    "test_size": 5441,
+    "threshold": 0.55,
+    "cv_accuracy": 0.7236,
+    "accuracy": 0.7144,
+    "f1_macro": 0.7089,
+    "at_risk_recall": 0.663
+  },
+  {
+    "cutoff_day": 60,
+    "enrollments": 26361,
+    "train_size": 21127,
+    "test_size": 5234,
+    "threshold": 0.55,
+    "cv_accuracy": 0.7693,
+    "accuracy": 0.7642,
+    "f1_macro": 0.7535,
+    "at_risk_recall": 0.6724
+  },
+  {
+    "cutoff_day": 90,
+    "enrollments": 25562,
+    "train_size": 20479,
+    "test_size": 5083,
+    "threshold": 0.55,
+    "cv_accuracy": 0.7958,
+    "accuracy": 0.7968,
+    "f1_macro": 0.7833,
+    "at_risk_recall": 0.6925
+  },
+  {
+    "cutoff_day": 120,
+    "enrollments": 24777,
+    "train_size": 19826,
+    "test_size": 4951,
+    "threshold": 0.55,
+    "cv_accuracy": 0.8262,
+    "accuracy": 0.8202,
+    "f1_macro": 0.8053,
+    "at_risk_recall": 0.7162
+  },
+  {
+    "cutoff_day": 150,
+    "enrollments": 24055,
+    "train_size": 19231,
+    "test_size": 4824,
+    "threshold": 0.55,
+    "cv_accuracy": 0.8561,
+    "accuracy": 0.8566,
+    "f1_macro": 0.8408,
+    "at_risk_recall": 0.747
+  }
+]

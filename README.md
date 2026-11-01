@@ -1,41 +1,76 @@
 <div align="center">
 
-<h1>Student Outcome Prediction — ML Classification Model</h1>
+<h1>Student Outcome Prediction — Early-Warning System</h1>
 
 <p>
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
   <img src="https://img.shields.io/badge/Scikit--Learn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white"/>
   <img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Accuracy-86%25-green?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Accuracy-71%25%20→%2086%25-green?style=for-the-badge"/>
 </p>
+
+<p><b><a href="LIVE_APP_URL" target="_blank">▶ Try the live app</a></b></p>
 
 </div>
 
-<div style="background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%); padding: 18px; border-radius: 12px; border-left: 5px solid #38bdf8; box-shadow: 0 4px 6px rgba(0,0,0,0.3); margin-bottom: 20px;">
-<p style="color: #cdd6f4; margin: 0; line-height: 1.7; font-size: 15px;">
-An end-to-end machine learning system and interactive web application designed to predict student academic success and analyze engagement patterns using the Open University Learning Analytics Dataset (OULAD).
-</p>
-</div>
+An end-to-end machine learning system that flags students at risk of failing or withdrawing from an online course, **while there is still time to help**. It is trained on the Open University Learning Analytics Dataset (OULAD): 10.6M platform activity records across 26K+ course enrollments.
+
+Instead of one model, the system has **five models, one per course checkpoint** (day 30, 60, 90, 120 and 150). Each model only sees data available by its day, so early checkpoints give an early warning and later ones are more accurate.
 
 ---
 
-<h2>📊 Results Summary</h2>
+<h2>📊 Results</h2>
 
-<table width="100%" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; border-color: #313244;">
+All checkpoints are evaluated on the **same students, held out from training** (no student appears in both training and test data).
+
+<table width="100%" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">
   <thead>
-    <tr style="background-color: #181825; color: #89b4fa;">
-      <th align="left">Metric / Aspect</th>
-      <th align="left">Details</th>
+    <tr>
+      <th align="left">Course day</th>
+      <th align="left">Accuracy</th>
+      <th align="left">F1 (macro)</th>
+      <th align="left">At-risk students caught</th>
     </tr>
   </thead>
   <tbody>
+    <tr><td>Day 30</td><td>71.4%</td><td>0.71</td><td>66%</td></tr>
+    <tr><td>Day 60</td><td>76.4%</td><td>0.75</td><td>67%</td></tr>
+    <tr><td>Day 90</td><td>79.7%</td><td>0.78</td><td>69%</td></tr>
+    <tr><td>Day 120</td><td>82.0%</td><td>0.81</td><td>72%</td></tr>
+    <tr><td><b>Day 150</b></td><td><b>85.7%</b></td><td><b>0.84</b></td><td><b>75%</b></td></tr>
+  </tbody>
+</table>
+
+<p>Courses last 234–269 days, so day 150 still leaves about three months before the final exam.</p>
+
+---
+
+<h2>⚙️ Pipeline</h2>
+
+<table width="100%" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">
+  <thead>
+    <tr><th align="left">Stage</th><th align="left">Details</th></tr>
+  </thead>
+  <tbody>
     <tr>
-      <td><b>Model Accuracy</b></td>
-      <td>Achieved an overall accuracy of <b>86%</b> on the test dataset.</td>
+      <td><b>1. One row per enrollment</b></td>
+      <td>Data is joined on student + module + presentation, so a student taking two modules gets two rows, each with that module's own activity.</td>
     </tr>
     <tr>
-      <td><b>Performance Balance</b></td>
-      <td>Strong classification metrics across both classes (Pass/Fail) with reliable precision and recall scores.</td>
+      <td><b>2. Feature engineering</b></td>
+      <td>Per checkpoint, using only data up to that day: average score, assessments submitted, <b>missed deadlines</b>, <b>average days late</b>, total clicks, active days, clicks per active day, <b>clicks in the last 14 days</b>, <b>days since last activity</b>, plus course and demographic information.</td>
+    </tr>
+    <tr>
+      <td><b>3. No data leakage</b></td>
+      <td>No withdrawal or unregistration fields are used as features; students who already withdrew by a checkpoint are excluded from that checkpoint; the train/test split is grouped by student.</td>
+    </tr>
+    <tr>
+      <td><b>4. Model</b></td>
+      <td><code>HistGradientBoostingClassifier</code>. Hyperparameters and the decision threshold are chosen with 5-fold <code>GroupKFold</code> cross-validation on the training set only.</td>
+    </tr>
+    <tr>
+      <td><b>5. App</b></td>
+      <td>Streamlit app with a checkpoint picker, example students, live predictions, the inputs driving each prediction, comparison with classmates and recommended actions.</td>
     </tr>
   </tbody>
 </table>
@@ -44,180 +79,20 @@ An end-to-end machine learning system and interactive web application designed t
 
 <h2>📁 Dataset</h2>
 
-<p>
-  The dataset used in this project is the multi-table <b>Open University Learning Analytics Dataset (OULAD)</b>. You can access and download the dataset directly from <a href="https://www.kaggle.com/datasets/anlgrbz/student-demographics-online-education-dataoulad" target="_blank">Kaggle Dataset Link</a>.
-</p>
-
-<p><b>Place all CSV files in the root project folder before running!</b></p>
-
-<table width="100%" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; border-color: #313244;">
-  <thead>
-    <tr style="background-color: #181825; color: #89b4fa;">
-      <th align="left">File</th>
-      <th align="left">Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>studentInfo.csv</code></td>
-      <td>Demographics & final outcomes</td>
-    </tr>
-    <tr>
-      <td><code>studentVle.csv</code></td>
-      <td>Student activity logs (VLE interactions)</td>
-    </tr>
-    <tr>
-      <td><code>studentAssessment.csv</code></td>
-      <td>Assessment scores</td>
-    </tr>
-    <tr>
-      <td><code>studentRegistration.csv</code></td>
-      <td>Registration & withdrawal info</td>
-    </tr>
-    <tr>
-      <td><code>courses.csv</code></td>
-      <td>Course-level info</td>
-    </tr>
-    <tr>
-      <td><code>assessments.csv</code></td>
-      <td>Assessment metadata</td>
-    </tr>
-    <tr>
-      <td><code>vle.csv</code></td>
-      <td>Virtual learning environment tools</td>
-    </tr>
-  </tbody>
-</table>
-
----
-
-<h2>⚙️ Project Pipeline</h2>
-
-<table width="100%" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; border-color: #313244;">
-  <thead>
-    <tr style="background-color: #181825; color: #89b4fa;">
-      <th align="left">Pipeline Stage</th>
-      <th align="left">Actions & Implementation</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>1. Data Loading & Exploration</b></td>
-      <td>Loaded raw CSV datasets including student info, VLE clicks, and assessments; explored structural relationships and identified missing values.</td>
-    </tr>
-    <tr>
-      <td><b>2. Data Cleaning</b></td>
-      <td>Cleaned and preprocessed raw datasets to handle missing records, standardize formats, and map unregistration dates for proper binary tracking.</td>
-    </tr>
-    <tr>
-      <td><b>3. Feature Engineering</b></td>
-      <td>Calculated key behavioral features per student: <code>avg_score</code>, <code>num_assessments</code>, <code>total_clicks</code>, <code>active_days</code>, <code>avg_clicks_per_day</code>, and <code>withdrew</code> status.</td>
-    </tr>
-    <tr>
-      <td><b>4. Model Training</b></td>
-      <td>Built a binary classification target, encoded categorical features using <code>pd.get_dummies</code>, and trained a <b>Random Forest Classifier</b> (80/20 train-test split).</td>
-    </tr>
-    <tr>
-      <td><b>5. Deployment</b></td>
-      <td>Exported the trained model using <code>joblib</code> (<code>student_model.pkl</code>) and generated historical processed data for real-time comparative percentile ranking.</td>
-    </tr>
-  </tbody>
-</table>
+<p>The raw data is not included in this repository because of its size (<code>studentVle.csv</code> alone is 450MB). Download OULAD from the <a href="https://analyse.kmi.open.ac.uk/open-dataset" target="_blank">Open University</a> or <a href="https://www.kaggle.com/datasets/anlgrbz/student-demographics-online-education-dataoulad" target="_blank">Kaggle</a> and place the CSV files in the project root to retrain the models.</p>
 
 ---
 
 <h2>🚀 How to Run</h2>
 
-<table width="100%" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; border-color: #313244;">
+<table width="100%" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">
   <thead>
-    <tr style="background-color: #181825; color: #89b4fa;">
-      <th align="left">Step</th>
-      <th align="left">Command / Description</th>
-    </tr>
+    <tr><th align="left">Step</th><th align="left">Command</th></tr>
   </thead>
   <tbody>
-    <tr>
-      <td><b>Step 1</b></td>
-      <td>Install dependencies:<br><code>pip install pandas numpy scikit-learn streamlit joblib</code></td>
-    </tr>
-    <tr>
-      <td><b>Step 2</b></td>
-      <td>Run the ML pipeline script to process data, train the model, and output the model files:<br><code>python student.py</code></td>
-    </tr>
-    <tr>
-      <td><b>Step 3</b></td>
-      <td>Launch the Streamlit web application locally:<br><code>streamlit run apps.py</code></td>
-    </tr>
-  </tbody>
-</table>
-
----
-
-<h2>💻 Streamlit App Features</h2>
-
-<table width="100%" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; border-color: #313244;">
-  <thead>
-    <tr style="background-color: #181825; color: #89b4fa;">
-      <th align="left">Feature</th>
-      <th align="left">Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>Real-time Predictions</b></td>
-      <td>Input student metrics via an interactive sidebar to instantly predict success probability and risk levels.</td>
-    </tr>
-    <tr>
-      <td><b>Comparative Analytics</b></td>
-      <td>Computes student performance and engagement scores against historical data percentiles.</td>
-    </tr>
-    <tr>
-      <td><b>Probability Distributions</b></td>
-      <td>Visualizes success vs. failure probabilities dynamically through interactive charts.</td>
-    </tr>
-    <tr>
-      <td><b>Personalized Recommendations</b></td>
-      <td>Generates actionable academic insights and interventions based on student behavior.</td>
-    </tr>
-  </tbody>
-</table>
-
----
-
-<h2>📦 Tech Stack</h2>
-
-<table width="100%" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; border-color: #313244;">
-  <thead>
-    <tr style="background-color: #181825; color: #89b4fa;">
-      <th align="left">Category</th>
-      <th align="left">Technologies</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>Programming Language</b></td>
-      <td>Python</td>
-    </tr>
-    <tr>
-      <td><b>Machine Learning</b></td>
-      <td>Scikit-learn, Random Forest</td>
-    </tr>
-    <tr>
-      <td><b>Data Processing</b></td>
-      <td>Pandas, NumPy</td>
-    </tr>
-    <tr>
-      <td><b>Web Framework</b></td>
-      <td>Streamlit</td>
-    </tr>
-    <tr>
-      <td><b>Model Persistence</b></td>
-      <td>Joblib</td>
-    </tr>
-    <tr>
-      <td><b>Visualization</b></td>
-      <td>Streamlit native charts & UI components</td>
-    </tr>
+    <tr><td><b>1. Install</b></td><td><code>pip install -r requirements.txt</code></td></tr>
+    <tr><td><b>2. Run the app</b> (trained models are included)</td><td><code>streamlit run app.py</code></td></tr>
+    <tr><td><b>Optional: retrain</b> (needs the dataset)</td><td><code>python student.py</code></td></tr>
   </tbody>
 </table>
 
@@ -225,48 +100,25 @@ An end-to-end machine learning system and interactive web application designed t
 
 <h2>📁 Project Structure</h2>
 
-<table width="100%" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; border-color: #313244;">
+<table width="100%" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">
   <thead>
-    <tr style="background-color: #181825; color: #89b4fa;">
-      <th align="left">File Name</th>
-      <th align="left">Description</th>
-    </tr>
+    <tr><th align="left">File</th><th align="left">Description</th></tr>
   </thead>
   <tbody>
-    <tr>
-      <td><code>student.py</code></td>
-      <td>Data preprocessing, feature engineering, and model training script</td>
-    </tr>
-    <tr>
-      <td><code>apps.py</code></td>
-      <td>Interactive Streamlit web application interface</td>
-    </tr>
-    <tr>
-      <td><code>studentInfo.csv</code></td>
-      <td>Student demographic dataset</td>
-    </tr>
-    <tr>
-      <td><code>studentVle.csv</code></td>
-      <td>Student Virtual Learning Environment interactions</td>
-    </tr>
-    <tr>
-      <td><code>studentAssessment.csv</code></td>
-      <td>Student assessment scores</td>
-    </tr>
-    <tr>
-      <td><code>studentRegistration.csv</code></td>
-      <td>Registration and unregistration details</td>
-    </tr>
-    <tr>
-      <td><code>student_model.pkl</code></td>
-      <td>Saved trained Random Forest model</td>
-    </tr>
-    <tr>
-      <td><code>decoded_student_data.csv</code></td>
-      <td>Processed historical dataset for comparisons</td>
-    </tr>
+    <tr><td><code>student.py</code></td><td>Feature engineering and training of the five checkpoint models</td></tr>
+    <tr><td><code>features.py</code></td><td>Feature encoding shared by training and the app, so both prepare inputs identically</td></tr>
+    <tr><td><code>app.py</code></td><td>Streamlit web app</td></tr>
+    <tr><td><code>Model/day_XX/</code></td><td>Trained model, feature columns and test metrics for each checkpoint</td></tr>
+    <tr><td><code>Model/summary.json</code></td><td>Test metrics for all checkpoints</td></tr>
+    <tr><td><code>decoded_student_data.csv</code></td><td>Feature values per checkpoint, used by the app to compare a student with classmates</td></tr>
   </tbody>
 </table>
+
+---
+
+<h2>📦 Tech Stack</h2>
+
+<p>Python · Pandas · NumPy · Scikit-learn · Streamlit · Altair · Joblib</p>
 
 ---
 
