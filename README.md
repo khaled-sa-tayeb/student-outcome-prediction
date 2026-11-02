@@ -9,7 +9,7 @@
   <img src="https://img.shields.io/badge/Accuracy-71%25%20→%2086%25-green?style=for-the-badge"/>
 </p>
 
-<p><b><a href="LIVE_APP_URL" target="_blank">▶ Try the live app</a></b></p>
+<p><b><a href="https://student-outcome-prediction-1.onrender.com/" target="_blank">▶ Try the live app</a></b></p>
 
 </div>
 
